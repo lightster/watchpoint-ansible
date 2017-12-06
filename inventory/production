@@ -1,0 +1,5 @@
+[wpt-pickem]
+wpt-pickem-1      ansible_host=45.33.57.61
+
+[all:vars]
+ansible_user = boxkeeper

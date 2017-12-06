@@ -1,0 +1,18 @@
+#!/bin/bash
+
+case "$1" in
+    production)
+        INVENTORY='production'
+        ;;
+
+    *)
+        echo $"Usage: $0 INVENTORY"
+        exit 1
+esac
+
+cat >Makefile <<ENV_VARS
+INVENTORY=inventory/${INVENTORY}
+
+ENV_VARS
+
+tee -a Makefile <Makefile.in >/dev/null

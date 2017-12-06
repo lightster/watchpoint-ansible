@@ -1,0 +1,2 @@
+pickem:;
+	ansible-playbook -i $(INVENTORY) pickem.yaml
