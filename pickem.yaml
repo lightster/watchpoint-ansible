@@ -4,6 +4,6 @@
     hosts: wpt-pickem
     roles:
       - docker
-      # - docker-compose
+      - docker-compose
       # - watchpoint-docker
       # - watchpoint-pickem
