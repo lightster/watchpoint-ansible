@@ -1,0 +1,34 @@
+---
+
+  - name: Install dependency binaries
+    apt:
+      name: make
+      update_cache: yes
+    become: yes
+
+  - name: Create accessible directory for checking out watchpoint-docker
+    file:
+      path: /opt/watchpoint-docker
+      owner: boxkeeper
+      group: boxkeeper
+      state: directory
+    become: yes
+
+  - name: Clone watchpoint-docker repo
+    git:
+      repo: git@github.com:lightster/watchpoint-docker.git
+      dest: /opt/watchpoint-docker
+      accept_hostkey: yes
+
+  - name: Copy Makefile.in to Makefile
+    copy:
+      src: /opt/watchpoint-docker/Makefile.in
+      dest: /opt/watchpoint-docker/Makefile
+      remote_src: yes
+
+  - name: Run install process for watchpoint-docker
+    make:
+      chdir: /opt/watchpoint-docker
+      target: install
+      params:
+        COMPOSE_FILES: " -f docker-compose.web.yml -f docker-compose.production.yml"

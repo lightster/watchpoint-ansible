@@ -5,5 +5,5 @@
     roles:
       - docker
       - docker-compose
-      # - watchpoint-docker
+      - watchpoint-docker
       # - watchpoint-pickem
