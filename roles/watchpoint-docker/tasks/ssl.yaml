@@ -1,0 +1,46 @@
+---
+
+  - name: Generate an account key for use with letsencrypt
+    openssl_privatekey:
+      path: /opt/watchpoint-docker/data/ssl/certs/letsencrypt.key
+
+  - name: Generate a private key for use with https SSL certificate
+    openssl_privatekey:
+      path: /opt/watchpoint-docker/data/ssl/certs/watchpoint.key
+
+  - name: Generate a certificate signing request
+    openssl_csr:
+      path: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
+      privatekey_path: /opt/watchpoint-docker/data/ssl/certs/watchpoint.key
+      country_name: US
+      state_or_province_name: CA
+      organization_name: Watchpoint.io
+      locality_name: Irvine
+      email_address: ops+cert@watchpoint.io
+      common_name: watchpoint.io
+      subject_alt_name: 'DNS:www.watchpoint.io,DNS:watchpoint.io'
+
+  - name: Generate challenge data for validating letsencrypt SSL cert
+    letsencrypt:
+      agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+      account_key: /opt/watchpoint-docker/data/ssl/certs/letsencrypt.key
+      csr: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
+      dest: /opt/watchpoint-docker/data/ssl/certs/watchpoint.crt
+    register: challenge
+
+  - name: Install the challenge data
+    copy:
+      dest: /opt/watchpoint-docker/data/ssl/letsencrypt/{{ item.value['http-01']['resource'] }}
+      content: "{{ item.value['http-01']['resource_value'] }}"
+    with_dict: "{{ challenge['challenge_data'] }}"
+    when: challenge | changed
+
+  - name: Generate an SSL cert using letsencrypt CA
+    letsencrypt:
+      agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+      account_key: /opt/watchpoint-docker/data/ssl/certs/letsencrypt.key
+      csr: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
+      dest: /opt/watchpoint-docker/data/ssl/certs/watchpoint.crt
+      data: "{{ challenge }}"
+    notify:
+      - reload nginx
