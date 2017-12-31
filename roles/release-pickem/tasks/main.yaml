@@ -1,0 +1,19 @@
+---
+
+  - name: Determine the new release version
+    set_fact:
+      release_version: "{{ '%Y-%m-%dT%H-%M-%S' | strftime }}"
+
+  - name: Setup a copy of the current source
+    git:
+      repo: git@github.com:lightster/watchpoint-pickem.git
+      dest: /opt/watchpoint-docker/codebase/{{ release_version }}
+      depth: 1 # shallow copy
+      accept_hostkey: yes
+
+  - name: Run the release process for pickem
+    make:
+      chdir: /opt/watchpoint-docker
+      target: release
+      params:
+        VERSION: "{{ release_version }}"
