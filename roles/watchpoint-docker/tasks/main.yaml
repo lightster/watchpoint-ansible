@@ -63,7 +63,8 @@
         INSTALL_TARGET: install-docker
 
   - name: Setup SSL certs
-    import_tasks: ssl.yaml
+    import_role:
+      name: watchpoint-ssl
 
   - name: Install watchpoint SSL nginx config
     copy:
