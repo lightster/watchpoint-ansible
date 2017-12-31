@@ -10,7 +10,9 @@
 
   - name: Install pip dependencies
     pip:
-      name: pyopenssl
+      name:
+        - pyopenssl
+        - docker
     become: yes
 
   - name: Create accessible directory for checking out watchpoint-docker
@@ -43,12 +45,21 @@
       dest: /opt/watchpoint-docker/Makefile
       remote_src: yes
 
+  - name: Setup the env config
+    template:
+      src: env.j2
+      dest: /opt/watchpoint-docker/.env
+      mode: 0600
+
   - name: Run install process for watchpoint-docker
     make:
       chdir: /opt/watchpoint-docker
       target: install
       params:
-        COMPOSE_FILES: " -f docker-compose.web.yml -f docker-compose.production.yml"
+        COMPOSE_FILES: >-
+          -f docker-compose.web.yml
+          -f docker-compose.postgres.yml
+          -f docker-compose.production.yml
         INSTALL_TARGET: install-docker
 
   - name: Setup SSL certs

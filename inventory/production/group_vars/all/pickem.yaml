@@ -1,0 +1,12 @@
+---
+
+pickem_bnet_api_key: "{{ vault_pickem_bnet_api_key }}"
+pickem_bnet_api_secret: "{{ vault_pickem_bnet_api_secret }}"
+
+pickem_postgres_user: "{{ vault_pickem_postgres_user }}"
+pickem_postgres_password: "{{ vault_pickem_postgres_password }}"
+pickem_postgres_db: "live_watchpoint"
+
+pickem_db_url: "postgres://\
+{{ pickem_postgres_user }}:{{ pickem_postgres_password }}@postgres:5432\
+/{{ pickem_postgres_db }}?application_name=watchpoint-app"
