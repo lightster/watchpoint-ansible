@@ -25,3 +25,11 @@
       append: yes
       groups: docker
     become: yes
+    register: docker_boxkeeper
+
+  - name: Reset SSH connection to allow user group change to take affect
+    local_action:
+      module: file
+      path: "~/.ssh/ansible-{{ hostvars[inventory_hostname]['ansible_user'] }}@{{ hostvars[inventory_hostname]['ansible_host'] }}:{{ hostvars[inventory_hostname]['ansible_port'] | default(22) }}"
+      state: absent
+    when: docker_boxkeeper | changed
