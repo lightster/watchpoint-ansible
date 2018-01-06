@@ -1,0 +1,75 @@
+---
+
+  - name: Install dependency binaries
+    apt:
+      name:
+        - make
+        - python-pip
+      update_cache: yes
+    become: yes
+
+  - name: Install pip dependencies
+    pip:
+      name:
+        - pyopenssl
+        - docker
+    become: yes
+
+  - name: Create accessible directory for checking out watchpoint-docker
+    file:
+      path: /opt/watchpoint-docker
+      owner: boxkeeper
+      group: boxkeeper
+      state: directory
+    become: yes
+
+  - name: Clone watchpoint-docker repo
+    git:
+      repo: git@github.com:lightster/watchpoint-docker.git
+      dest: /opt/watchpoint-docker
+      accept_hostkey: yes
+    notify:
+      - reload nginx
+
+  - name: Install base nginx config
+    copy:
+      src: /opt/watchpoint-docker/docker/nginx/dist/default.conf
+      dest: /opt/watchpoint-docker/docker/nginx/conf.d/default.conf
+      remote_src: yes
+    notify:
+      - reload nginx
+
+  - name: Copy Makefile.in to Makefile
+    copy:
+      src: /opt/watchpoint-docker/Makefile.in
+      dest: /opt/watchpoint-docker/Makefile
+      remote_src: yes
+
+  - name: Setup the env config
+    template:
+      src: env.j2
+      dest: /opt/watchpoint-docker/.env
+      mode: 0600
+
+  - name: Run install process for watchpoint-docker
+    make:
+      chdir: /opt/watchpoint-docker
+      target: install
+      params:
+        COMPOSE_FILES: >-
+          -f docker-compose.web.yml
+          -f docker-compose.postgres.yml
+          -f docker-compose.production.yml
+        INSTALL_TARGET: install-docker
+
+  - name: Setup SSL certs
+    import_role:
+      name: watchpoint-ssl
+
+  - name: Install watchpoint SSL nginx config
+    copy:
+      src: /opt/watchpoint-docker/docker/nginx/dist/watchpoint.conf
+      dest: /opt/watchpoint-docker/docker/nginx/conf.d/watchpoint.conf
+      remote_src: yes
+    notify:
+      - reload nginx
