@@ -1,2 +1,5 @@
 pickem:;
 	ansible-playbook -i $(INVENTORY) pickem.yaml
+
+release:;
+	ansible-playbook -i $(INVENTORY) release.yaml

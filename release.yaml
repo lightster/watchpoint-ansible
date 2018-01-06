@@ -1,0 +1,6 @@
+---
+
+  - name: Release pickem
+    hosts: wpt-pickem
+    roles:
+      - release-pickem
