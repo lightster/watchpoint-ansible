@@ -26,6 +26,7 @@
       account_key: /opt/watchpoint-docker/data/ssl/certs/letsencrypt.key
       csr: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
       dest: /opt/watchpoint-docker/data/ssl/certs/watchpoint.crt
+      remaining_days: 500
     register: challenge
 
   - name: Install the challenge data
@@ -42,5 +43,6 @@
       csr: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
       dest: /opt/watchpoint-docker/data/ssl/certs/watchpoint.crt
       data: "{{ challenge }}"
+      remaining_days: 500
     notify:
       - reload nginx
