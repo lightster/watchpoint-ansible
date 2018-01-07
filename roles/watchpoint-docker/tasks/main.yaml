@@ -28,6 +28,7 @@
       repo: git@github.com:lightster/watchpoint-docker.git
       dest: /opt/watchpoint-docker
       accept_hostkey: yes
+      version: master
     notify:
       - reload nginx
 
@@ -60,7 +61,7 @@
           -f docker-compose.web.yml
           -f docker-compose.postgres.yml
           -f docker-compose.production.yml
-        INSTALL_TARGET: install-docker
+        INSTALL_TARGET: install-production
 
   - name: Setup SSL certs
     import_role:
