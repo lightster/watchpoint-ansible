@@ -1,0 +1,23 @@
+---
+
+  - name: Create accessible directory for checking out watchpoint-docker
+    file:
+      path: /opt/watchpoint-ansible
+      owner: boxkeeper
+      group: boxkeeper
+      state: directory
+    become: yes
+
+  - name: Clone watchpoint-ansible repo
+    git:
+      repo: git@github.com:lightster/watchpoint-ansible.git
+      dest: /opt/watchpoint-ansible
+      accept_hostkey: yes
+
+  - name: setup ansible vault password file
+    copy:
+      src: .vault_pass
+      dest: /opt/watchpoint-ansible/.vault_pass
+      mode: 0600
+      owner: boxkeeper
+      group: boxkeeper

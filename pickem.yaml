@@ -6,5 +6,6 @@
       - ansible
       - docker
       - docker-compose
+      - watchpoint-ansible
       - watchpoint-docker
       - release-pickem
