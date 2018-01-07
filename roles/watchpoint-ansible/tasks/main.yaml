@@ -37,5 +37,6 @@
   - name: Setup cron to renew SSL cert
     cron:
       name: "Renew SSL cert"
-      minute: "*"
-      job: "cd /opt/watchpoint-ansible && INVENTORY=inventory/production make renew-ssl-cert"
+      minute: "0"
+      hour: "14"
+      job: "cd /opt/watchpoint-ansible && PATH=\"/usr/local/bin:$PATH\" INVENTORY=inventory/production make renew-ssl-cert"
