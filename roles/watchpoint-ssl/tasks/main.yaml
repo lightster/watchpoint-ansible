@@ -24,8 +24,10 @@
     letsencrypt:
       agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
       account_key: /opt/watchpoint-docker/data/ssl/certs/letsencrypt.key
+      acme_directory: "{{ acme_directory }}"
       csr: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
       dest: /opt/watchpoint-docker/data/ssl/certs/watchpoint.crt
+      remaining_days: 30
     register: challenge
 
   - name: Install the challenge data
@@ -39,8 +41,10 @@
     letsencrypt:
       agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
       account_key: /opt/watchpoint-docker/data/ssl/certs/letsencrypt.key
+      acme_directory: "{{ acme_directory }}"
       csr: /opt/watchpoint-docker/data/ssl/certs/watchpoint.csr
       dest: /opt/watchpoint-docker/data/ssl/certs/watchpoint.crt
       data: "{{ challenge }}"
+      remaining_days: 30
     notify:
       - reload nginx

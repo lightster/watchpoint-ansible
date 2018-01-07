@@ -1,0 +1,6 @@
+---
+
+  - name: Renew SSL cert
+    hosts: localhost
+    roles:
+      - watchpoint-ssl

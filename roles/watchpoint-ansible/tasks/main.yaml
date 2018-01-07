@@ -1,0 +1,41 @@
+---
+
+  - name: Create accessible directory for checking out watchpoint-docker
+    file:
+      path: /opt/watchpoint-ansible
+      owner: boxkeeper
+      group: boxkeeper
+      state: directory
+    become: yes
+
+  - name: Clone watchpoint-ansible repo
+    git:
+      repo: git@github.com:lightster/watchpoint-ansible.git
+      dest: /opt/watchpoint-ansible
+      accept_hostkey: yes
+
+  - name: Setup ansible vault password file
+    copy:
+      src: .vault_pass
+      dest: /opt/watchpoint-ansible/.vault_pass
+      mode: 0600
+      owner: boxkeeper
+      group: boxkeeper
+
+  - name: Copy Makefile.in to Makefile
+    copy:
+      src: /opt/watchpoint-ansible/Makefile.in
+      dest: /opt/watchpoint-ansible/Makefile
+      remote_src: yes
+
+  - name: Setup cron email
+    cronvar:
+      name: EMAIL
+      value: ops@watchpoint.io
+
+  - name: Setup cron to renew SSL cert
+    cron:
+      name: "Renew SSL cert"
+      minute: "0"
+      hour: "14"
+      job: "cd /opt/watchpoint-ansible && PATH=\"/usr/local/bin:$PATH\" INVENTORY=inventory/production make renew-ssl-cert"
