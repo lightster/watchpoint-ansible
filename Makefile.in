@@ -3,3 +3,6 @@ pickem:;
 
 release:;
 	ansible-playbook -i $(INVENTORY) release.yaml
+
+renew-ssl-cert:;
+	ansible-playbook -i $(INVENTORY) renew-ssl-cert.yaml

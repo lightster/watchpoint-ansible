@@ -13,11 +13,23 @@
       repo: git@github.com:lightster/watchpoint-ansible.git
       dest: /opt/watchpoint-ansible
       accept_hostkey: yes
+      version: renew-ssl-cert
 
-  - name: setup ansible vault password file
+  - name: Setup ansible vault password file
     copy:
       src: .vault_pass
       dest: /opt/watchpoint-ansible/.vault_pass
       mode: 0600
       owner: boxkeeper
       group: boxkeeper
+
+  - name: Setup cron email
+    cronvar:
+      name: EMAIL
+      value: ops@watchpoint.io
+
+  - name: Setup cron to renew SSL cert
+    cron:
+      name: "Renew SSL cert"
+      minute: "*"
+      job: "cd /opt/watchpoint-ansible && make renew-ssl-cert"
