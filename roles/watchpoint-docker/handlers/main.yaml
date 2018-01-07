@@ -1,6 +1,6 @@
 ---
 
 - name: reload nginx
-  command: docker-compose kill -s SIGHUP
+  command: docker-compose kill -s SIGHUP nginx
   args:
     chdir: /opt/watchpoint-docker
