@@ -3,6 +3,7 @@
   - name: Install pickem
     hosts: wpt-pickem
     roles:
+      - ansible
       - docker
       - docker-compose
       - watchpoint-docker
