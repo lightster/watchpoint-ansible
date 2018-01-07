@@ -23,6 +23,12 @@
       owner: boxkeeper
       group: boxkeeper
 
+  - name: Copy Makefile.in to Makefile
+    copy:
+      src: /opt/watchpoint-ansible/Makefile.in
+      dest: /opt/watchpoint-ansible/Makefile
+      remote_src: yes
+
   - name: Setup cron email
     cronvar:
       name: EMAIL
@@ -32,4 +38,4 @@
     cron:
       name: "Renew SSL cert"
       minute: "*"
-      job: "cd /opt/watchpoint-ansible && make renew-ssl-cert"
+      job: "cd /opt/watchpoint-ansible && INVENTORY=inventory/production make renew-ssl-cert"
